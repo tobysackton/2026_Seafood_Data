@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 2: Historical Market Regimes (2016-2025)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 380px;
+            margin-bottom: 20px;
+        }
+        .regimes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .regime {
+            padding: 14px 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .regime-1 { background: #ecfdf5; border: 2px solid #6ee7b7; }
+        .regime-2 { background: #fef3c7; border: 2px solid #fcd34d; }
+        .regime-3 { background: #fed7aa; border: 2px solid #fb923c; }
+        .regime-4 { background: #fecaca; border: 2px solid #f87171; }
+        .regime-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .regime-1 .regime-title { color: #047857; }
+        .regime-2 .regime-title { color: #b45309; }
+        .regime-3 .regime-title { color: #c2410c; }
+        .regime-4 .regime-title { color: #b91c1c; }
+        .regime-years {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .regime-stats {
+            font-size: 0.8rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .regime-stats strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        .finding {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #0f172a; }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 2: Historical Market Regimes (2016-2025)</h1>
+        <p class="subtitle">Four distinct periods show the transition from stable baseline to structural premium</p>
+
+        <div class="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+
+        <div class="regimes">
+            <div class="regime regime-1">
+                <div class="regime-title">BASELINE</div>
+                <div class="regime-years">2016-2021</div>
+                <div class="regime-stats">
+                    <strong>$0.09/lb</strong>
+                    Gulf share: 39-55%
+                </div>
+            </div>
+            <div class="regime regime-2">
+                <div class="regime-title">DISRUPTION</div>
+                <div class="regime-years">2022-2023</div>
+                <div class="regime-stats">
+                    <strong>$0.10-$0.27/lb</strong>
+                    Price collapse era
+                </div>
+            </div>
+            <div class="regime regime-3">
+                <div class="regime-title">TRANSITION</div>
+                <div class="regime-years">2024</div>
+                <div class="regime-stats">
+                    <strong>$0.36/lb</strong>
+                    Gulf drops to 30%
+                </div>
+            </div>
+            <div class="regime regime-4">
+                <div class="regime-title">NEW REGIME</div>
+                <div class="regime-years">2025</div>
+                <div class="regime-stats">
+                    <strong>$0.70/lb</strong>
+                    Gulf at 22%
+                </div>
+            </div>
+        </div>
+
+        <div class="finding">
+            <strong>Key insight:</strong> The $0.10 historical baseline reflected a market where Gulf and Newfoundland crab were close substitutes. As Gulf's share fell below 30%, the market bifurcated: Gulf became a premium tier serving loyal buyers, while Newfoundland serves the volume market. The old baseline is now obsolete.
+        </div>
+
+        <p class="source">Source: DFO Quota Reports, Urner Barry wholesale quotations (5-8 oz sections) | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        const data = {
+            labels: ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25', '2025-26'],
+            datasets: [
+                {
+                    label: 'Price Differential ($/lb)',
+                    data: [0.11, 0.10, 0.06, 0.10, 0.09, 0.09, 0.10, 0.27, 0.36, 0.70],
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    fill: true,
+                    tension: 0.2,
+                    pointRadius: 7,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: function(context) {
+                        const index = context.dataIndex;
+                        if (index <= 5) return '#10b981'; // Baseline - green
+                        if (index <= 7) return '#f59e0b'; // Disruption - yellow
+                        if (index === 8) return '#f97316'; // Transition - orange
+                        return '#ef4444'; // New regime - red
+                    },
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'white',
+                        titleColor: '#0f172a',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return `Differential: $${context.parsed.y.toFixed(2)}/lb`;
+                            },
+                            afterLabel: function(context) {
+                                const index = context.dataIndex;
+                                const gulfShares = [40.4, 55.4, 43.4, 53.7, 51.6, 38.7, 39.0, 39.0, 30.5, 22.1];
+                                const regimes = ['Baseline', 'Baseline', 'Baseline', 'Baseline', 'Baseline', 'Baseline', 'Disruption', 'Disruption', 'Transition', 'New Regime'];
+                                return [`Gulf Share: ${gulfShares[index]}%`, `Period: ${regimes[index]}`];
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            baseline: {
+                                type: 'box',
+                                xMin: -0.5,
+                                xMax: 5.5,
+                                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                                borderWidth: 0
+                            },
+                            disruption: {
+                                type: 'box',
+                                xMin: 5.5,
+                                xMax: 7.5,
+                                backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                                borderWidth: 0
+                            },
+                            transition: {
+                                type: 'box',
+                                xMin: 7.5,
+                                xMax: 8.5,
+                                backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                                borderWidth: 0
+                            },
+                            newregime: {
+                                type: 'box',
+                                xMin: 8.5,
+                                xMax: 9.5,
+                                backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                                borderWidth: 0
+                            },
+                            thresholdLine: {
+                                type: 'line',
+                                yMin: 0.10,
+                                yMax: 0.10,
+                                borderColor: '#9ca3af',
+                                borderWidth: 1,
+                                borderDash: [5, 5],
+                                label: {
+                                    display: true,
+                                    content: 'Historical baseline ($0.10)',
+                                    position: 'start',
+                                    backgroundColor: 'transparent',
+                                    color: '#6b7280',
+                                    font: { size: 10 }
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#f1f5f9' }
+                    },
+                    y: {
+                        min: 0,
+                        max: 0.8,
+                        title: {
+                            display: true,
+                            text: 'Price Differential ($/lb)',
+                            color: '#dc2626'
+                        },
+                        ticks: {
+                            callback: value => '$' + value.toFixed(2),
+                            color: '#64748b'
+                        },
+                        grid: { color: '#f1f5f9' }
+                    }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('chart'), config);
+    </script>
+</body>
+</html>
