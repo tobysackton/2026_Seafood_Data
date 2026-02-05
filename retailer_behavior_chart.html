@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 5: Retailer Response Patterns to Gulf Premium</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+            margin-bottom: 24px;
+        }
+        .behavior-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .behavior-card {
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .switcher { background: #fee2e2; border: 2px solid #fca5a5; }
+        .loyal { background: #dcfce7; border: 2px solid #86efac; }
+        .exited { background: #e5e7eb; border: 2px solid #9ca3af; }
+        .behavior-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .behavior-type {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .switcher .behavior-type { color: #b91c1c; }
+        .loyal .behavior-type { color: #15803d; }
+        .exited .behavior-type { color: #4b5563; }
+        .behavior-example {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .behavior-corr {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .behavior-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        .finding {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            border-radius: 0 8px 8px 0;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #047857; }
+        .methodology {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 5: Retailer Response Patterns to Gulf Premium</h1>
+        <p class="subtitle">State-level import data reveals three distinct buyer behaviors as Gulf supply tightened</p>
+
+        <div class="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+
+        <div class="behavior-grid">
+            <div class="behavior-card switcher">
+                <div class="behavior-icon">📉</div>
+                <div class="behavior-type">PRICE-SENSITIVE SWITCHER</div>
+                <div class="behavior-example">Kroger (Indiana)</div>
+                <div class="behavior-corr">r = +0.90 with Gulf supply</div>
+                <div class="behavior-desc">Purchasing tracked available supply. As Gulf tightened, switched to Newfoundland product.</div>
+            </div>
+            <div class="behavior-card loyal">
+                <div class="behavior-icon">🔒</div>
+                <div class="behavior-type">LOYAL GULF BUYER</div>
+                <div class="behavior-example">C&S/Market Basket (NH)</div>
+                <div class="behavior-corr">r = -0.35 with Gulf supply</div>
+                <div class="behavior-desc">Maintained Gulf share despite premium. Absorbed higher costs rather than switch origins.</div>
+            </div>
+            <div class="behavior-card exited">
+                <div class="behavior-icon">🚪</div>
+                <div class="behavior-type">MARKET EXIT</div>
+                <div class="behavior-example">Jewel-Osco (Illinois)</div>
+                <div class="behavior-corr">r = -0.11 (before exit)</div>
+                <div class="behavior-desc">Exited Gulf sourcing entirely when premium rose. Zero direct Gulf purchases 2023-2025.</div>
+            </div>
+        </div>
+
+        <div class="finding">
+            <strong>Why loyalty matters for pricing:</strong> The presence of committed Gulf buyers—retailers who maintained sourcing despite the premium—created a price floor. Even as price-sensitive accounts switched to Newfoundland, loyal buyers competed for diminishing Gulf supply, sustaining the elevated differential through the season.
+        </div>
+
+        <div class="methodology">
+            <strong>Methodology:</strong> Analysis based on state-level U.S. customs import data, which captures the final destination state for each shipment. Major retailers were identified by cross-referencing destination states with distribution center locations. Correlation coefficients measure the relationship between each state's New Brunswick share and Gulf's overall supply share (2020-2025).
+        </div>
+
+        <p class="source">Source: U.S. Customs import data via Trade Data Monitor, retailer distribution center mapping | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        const data = {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                {
+                    label: 'Kroger (Indiana) - Switcher',
+                    data: [21.9, 8.9, 5.1, 7.9, 2.0, 1.8],
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#dc2626',
+                    tension: 0.3,
+                },
+                {
+                    label: 'C&S/Market Basket (NH) - Loyal',
+                    data: [31.2, 45.6, 61.9, 51.9, 49.7, 44.5],
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#16a34a',
+                    tension: 0.3,
+                },
+                {
+                    label: 'Jewel-Osco (Illinois) - Exited',
+                    data: [59.7, 85.0, 40.9, 0, 0, 0],
+                    borderColor: '#6b7280',
+                    backgroundColor: 'rgba(107, 114, 128, 0.1)',
+                    borderWidth: 2.5,
+                    borderDash: [5, 5],
+                    pointRadius: 5,
+                    pointBackgroundColor: '#6b7280',
+                    tension: 0.3,
+                },
+                {
+                    label: 'Gulf Supply Share (reference)',
+                    data: [51.6, 38.7, 39.0, 39.0, 30.5, 22.1],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'transparent',
+                    borderWidth: 1.5,
+                    borderDash: [2, 2],
+                    pointRadius: 0,
+                    tension: 0.3,
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 20, padding: 15 }
+                    },
+                    tooltip: {
+                        backgroundColor: 'white',
+                        titleColor: '#0f172a',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.parsed.y === 0 && context.datasetIndex === 2) {
+                                    return `${context.dataset.label}: Exited market`;
+                                }
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        min: 0,
+                        max: 90,
+                        title: {
+                            display: true,
+                            text: 'Gulf (NB) Share of State Imports (%)'
+                        },
+                        ticks: {
+                            callback: value => value + '%'
+                        },
+                        grid: { color: '#f1f5f9' }
+                    }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('chart'), config);
+    </script>
+</body>
+</html>

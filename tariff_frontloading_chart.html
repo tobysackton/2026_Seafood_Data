@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 3: Tariff-Induced Front-Loading (2023-2025)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 20px;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric {
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .metric-2023 { background: #ecfdf5; border: 2px solid #6ee7b7; }
+        .metric-2024 { background: #fef3c7; border: 2px solid #fcd34d; }
+        .metric-2025 { background: #fecaca; border: 2px solid #f87171; }
+        .metric-year {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .metric-2023 .metric-value { color: #047857; }
+        .metric-2024 .metric-value { color: #b45309; }
+        .metric-2025 .metric-value { color: #b91c1c; }
+        .metric-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .metric-remaining {
+            font-size: 0.85rem;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+        .finding {
+            background: #fef2f2;
+            border-left: 4px solid #dc2626;
+            border-radius: 0 8px 8px 0;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #b91c1c; }
+        .context {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.85rem;
+        }
+        .context strong { color: #0f172a; }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 3: Tariff-Induced Front-Loading (2023-2025)</h1>
+        <p class="subtitle">Share of annual production exported during April-July window</p>
+
+        <div class="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+
+        <div class="metrics">
+            <div class="metric metric-2023">
+                <div class="metric-year">PACK YEAR 2023</div>
+                <div class="metric-value">71.8%</div>
+                <div class="metric-label">Exported Apr-Jul</div>
+                <div class="metric-remaining">40.0M lbs remaining</div>
+            </div>
+            <div class="metric metric-2024">
+                <div class="metric-year">PACK YEAR 2024</div>
+                <div class="metric-value">82.6%</div>
+                <div class="metric-label">Exported Apr-Jul</div>
+                <div class="metric-remaining">22.9M lbs remaining</div>
+            </div>
+            <div class="metric metric-2025">
+                <div class="metric-year">PACK YEAR 2025</div>
+                <div class="metric-value">92.6%</div>
+                <div class="metric-label">Exported Apr-Jul</div>
+                <div class="metric-remaining">9.6M lbs remaining</div>
+            </div>
+        </div>
+
+        <div class="finding">
+            <strong>The tariff effect:</strong> Threatened 25% tariffs drove buyers to secure inventory before potential implementation. In 2025, 92.6% of Canadian snow crab was exported in just four months—leaving only 9.6 million pounds for the remaining eight months.
+        </div>
+
+        <div class="context">
+            <strong>Why this matters for Gulf pricing:</strong> Gulf's 6-8 week season falls entirely within the April-July rush window. When buyers competed for limited early-season supply, Gulf producers—with no late-season production to offer—could command premium prices. The market was essentially bidding for the entire Gulf season at once.
+        </div>
+
+        <p class="source">Source: Canadian customs statistics via Trade Data Monitor | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        const data = {
+            labels: ['Pack Year 2023', 'Pack Year 2024', 'Pack Year 2025'],
+            datasets: [
+                {
+                    label: 'April-July Exports',
+                    data: [101.6, 109.0, 119.3],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderColor: ['#047857', '#b45309', '#b91c1c'],
+                    borderWidth: 2,
+                    borderRadius: 6,
+                },
+                {
+                    label: 'August-March Remaining',
+                    data: [40.0, 22.9, 9.6],
+                    backgroundColor: ['rgba(16, 185, 129, 0.3)', 'rgba(245, 158, 11, 0.3)', 'rgba(239, 68, 68, 0.3)'],
+                    borderColor: ['#047857', '#b45309', '#b91c1c'],
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }
+            ]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        backgroundColor: 'white',
+                        titleColor: '#0f172a',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                const pct = context.datasetIndex === 0
+                                    ? [71.8, 82.6, 92.6][context.dataIndex]
+                                    : [28.2, 17.4, 7.4][context.dataIndex];
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}M lbs (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Million Pounds'
+                        },
+                        ticks: {
+                            callback: value => value + 'M'
+                        },
+                        grid: { color: '#f1f5f9' }
+                    }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('chart'), config);
+    </script>
+</body>
+</html>
