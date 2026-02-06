@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 7: Gulf Premium by Size Class, Pack Year 2025</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .chart-container {
+            position: relative;
+            height: 380px;
+            margin-bottom: 20px;
+        }
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .metric-box {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metric-box.highlight-orange {
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+        }
+        .metric-box.highlight-blue {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+        }
+        .metric-label {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .metric-value.orange { color: #ea580c; }
+        .metric-value.blue { color: #2563eb; }
+        .metric-sub {
+            font-size: 0.68rem;
+            color: #94a3b8;
+        }
+        .finding {
+            background: #fefce8;
+            border-left: 4px solid #eab308;
+            border-radius: 0 8px 8px 0;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #a16207; }
+        .legend-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .methodology {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 14px;
+        }
+        @media (max-width: 600px) {
+            .metrics-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 7: Gulf Premium by Size Class, Pack Year 2025</h1>
+        <p class="subtitle">5-8 oz showed more extreme behavior than 8 oz & up during the tariff rush</p>
+
+        <div class="metrics-row">
+            <div class="metric-box highlight-orange">
+                <div class="metric-label">5-8 oz Peak Premium</div>
+                <div class="metric-value orange">$1.50/lb</div>
+                <div class="metric-sub">April 2025</div>
+            </div>
+            <div class="metric-box highlight-blue">
+                <div class="metric-label">8 oz+ Peak Premium</div>
+                <div class="metric-value blue">$1.05/lb</div>
+                <div class="metric-sub">May 2025</div>
+            </div>
+            <div class="metric-box highlight-orange">
+                <div class="metric-label">5-8 oz Current</div>
+                <div class="metric-value orange">$0.10/lb</div>
+                <div class="metric-sub">Jan 2026</div>
+            </div>
+            <div class="metric-box highlight-blue">
+                <div class="metric-label">8 oz+ Current</div>
+                <div class="metric-value blue">$0.50/lb</div>
+                <div class="metric-sub">Jan 2026</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="sizeClassChart"></canvas>
+        </div>
+
+        <div class="finding">
+            <strong>Key insight:</strong> The 5-8 oz class—serving retail buyers on tight margins—showed the most volatile response to tariff uncertainty, with premiums swinging from $1.50 in April to near parity by January. The 8 oz+ class, moving through foodservice channels with longer purchasing cycles, showed a more muted and persistent premium.
+        </div>
+
+        <div class="methodology">
+            <strong>Methodology:</strong> Premium calculated as Gulf of St. Lawrence price minus Newfoundland price for each size class. Weekly Urner Barry quotations, low-end of range. Pack Year 2025 begins April 2025. Gap in March-early April reflects seasonal market transition when quotations are not published for both origins simultaneously.
+        </div>
+
+        <p class="source">Source: Urner Barry wholesale quotations | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        // Weekly data from April 2025 through January 2026
+        // Dates as labels (simplified to show key weeks)
+        const labels = [
+            'Apr 7', 'Apr 14', 'Apr 21', 'Apr 28',
+            'May 5', 'May 12', 'May 19', 'May 26',
+            'Jun 2', 'Jun 9', 'Jun 16', 'Jun 23', 'Jun 30',
+            'Jul 7', 'Jul 14', 'Jul 21', 'Jul 28',
+            'Aug 4', 'Aug 11', 'Aug 18', 'Aug 25',
+            'Sep 1', 'Sep 8', 'Sep 15', 'Sep 22', 'Sep 29',
+            'Oct 6', 'Oct 13', 'Oct 20', 'Oct 27',
+            'Nov 3', 'Nov 10', 'Nov 17', 'Nov 24',
+            'Dec 1', 'Dec 8', 'Dec 15', 'Dec 22', 'Dec 29',
+            'Jan 5', 'Jan 12', 'Jan 19'
+        ];
+
+        // 5-8 oz differential (Gulf - NL)
+        // April: some NL prices missing early, using available data
+        const diff_5_8 = [
+            null, null, 1.50, 1.40,  // April (9.50-8.00, 9.50-8.10)
+            1.40, 1.40, 1.30, 1.25,  // May
+            1.25, 1.10, 1.10, 0.95, 0.90,  // June
+            0.80, 0.70, 0.57, 0.45,  // July
+            0.37, 0.40, 0.55, 0.55,  // August
+            0.55, 0.55, 0.55, 0.55, 0.55,  // September
+            0.55, 0.55, 0.50, 0.45,  // October
+            0.45, 0.45, 0.45, 0.45,  // November
+            0.38, 0.30, 0.25, 0.25, 0.25,  // December
+            0.15, 0.08, 0.10  // January 2026
+        ];
+
+        // 8 oz & up differential (Gulf - NL)
+        const diff_8_up = [
+            null, null, null, 1.00,  // April (14.50-13.50)
+            1.03, 1.05, 0.95, 0.93,  // May
+            0.90, 0.90, 0.90, 0.90, 0.90,  // June
+            0.90, 0.90, 0.88, 0.85,  // July
+            0.85, 0.85, 0.85, 0.85,  // August
+            0.85, 0.85, 0.85, 0.85, 0.85,  // September
+            0.85, 0.87, 0.79, 0.70,  // October
+            0.70, 0.75, 0.92, 1.05,  // November
+            1.10, 0.95, 1.00, 1.00, 1.00,  // December
+            0.74, 0.50, 0.50  // January 2026
+        ];
+
+        const ctx = document.getElementById('sizeClassChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '5-8 oz Premium',
+                        data: diff_5_8,
+                        borderColor: '#ea580c',
+                        backgroundColor: 'rgba(234, 88, 12, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 2,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#ea580c',
+                        fill: false,
+                        tension: 0.3,
+                        spanGaps: true
+                    },
+                    {
+                        label: '8 oz & Up Premium',
+                        data: diff_8_up,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 2,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#2563eb',
+                        fill: false,
+                        tension: 0.3,
+                        spanGaps: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 16,
+                            padding: 16,
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function(context) {
+                                if (context.parsed.y === null) return null;
+                                return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}/lb`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            maxRotation: 45,
+                            font: { size: 10 },
+                            callback: function(value, index) {
+                                // Show every 4th label to reduce clutter
+                                return index % 4 === 0 ? this.getLabelForValue(value) : '';
+                            }
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 1.8,
+                        title: {
+                            display: true,
+                            text: 'Gulf Premium ($/lb)',
+                            font: { size: 12 }
+                        },
+                        ticks: {
+                            callback: value => '$' + value.toFixed(2)
+                        },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
