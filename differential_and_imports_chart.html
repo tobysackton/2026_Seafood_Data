@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 6: 2025 Differential Decomposition and Import Timing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .chart-panel {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+        .finding {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            border-radius: 0 8px 8px 0;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #047857; }
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .metric-box {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .metric-sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        .methodology {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 14px;
+        }
+        @media (max-width: 768px) {
+            .charts-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .metrics-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 6: 2025 Differential Decomposition and Import Timing</h1>
+        <p class="subtitle">The temporal premium dissipated as cumulative imports approached their asymptote</p>
+
+        <div class="metrics-row">
+            <div class="metric-box">
+                <div class="metric-label">April–July Imports</div>
+                <div class="metric-value">90.6M lbs</div>
+                <div class="metric-sub">93.8% of pack year total</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">August–October Imports</div>
+                <div class="metric-value">6.0M lbs</div>
+                <div class="metric-sub">6.2% of pack year total</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Temporal Premium Peak</div>
+                <div class="metric-value">$0.97/lb</div>
+                <div class="metric-sub">April 2025</div>
+            </div>
+        </div>
+
+        <div class="charts-wrapper">
+            <div class="chart-panel">
+                <div class="chart-title">Price Differential: Structural vs Temporal Components</div>
+                <div class="chart-container">
+                    <canvas id="differentialChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <div class="chart-title">Cumulative US Snow Crab Imports (Pack Year 2025)</div>
+                <div class="chart-container">
+                    <canvas id="importsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="finding">
+            <strong>The connection:</strong> The temporal premium tracked the import rush. As cumulative imports flattened—indicating buyers had secured their inventory—the urgency-driven premium dissipated. By October, with imports approaching their asymptote, the differential had converged to nearly the structural baseline.
+        </div>
+
+        <div class="methodology">
+            <strong>Methodology:</strong> Structural component derived from regression-predicted differential at 2025's Gulf supply share (22.1%). Temporal component = observed differential minus structural prediction. Import data from U.S. customs statistics; cumulative totals combine Newfoundland and New Brunswick origins. Pack Year 2025 runs April 2025 through March 2026.
+        </div>
+
+        <p class="source">Source: Urner Barry wholesale quotations, U.S. Customs import data via Trade Data Monitor | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        // Differential decomposition data (April-October 2025)
+        const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+
+        // Structural component stays relatively constant based on regression
+        const structuralComponent = [0.53, 0.53, 0.53, 0.53, 0.53, 0.53, 0.53];
+
+        // Observed differentials from Urner Barry (approximate from the data)
+        const observedDifferential = [1.47, 1.34, 1.10, 0.69, 0.47, 0.55, 0.52];
+
+        // Temporal component = observed - structural
+        const temporalComponent = observedDifferential.map((obs, i) => Math.max(0, obs - structuralComponent[i]));
+
+        // Cumulative import data (in millions of lbs)
+        // April: 8.56 + 9.21 = 17.77
+        // May: + 23.38 + 4.36 = 45.51
+        // June: + 25.79 + 1.28 = 72.58
+        // July: + 15.77 + 2.22 = 90.57
+        // August: + 3.80 + 0.65 = 95.02
+        // September: + 0.57 + 0.53 = 96.12
+        // October: + 0.30 + 0.15 = 96.57
+        const cumulativeImports = [17.77, 45.51, 72.58, 90.57, 95.02, 96.12, 96.57];
+
+        // Differential chart - stacked bar
+        const diffCtx = document.getElementById('differentialChart').getContext('2d');
+        new Chart(diffCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Structural (supply-driven)',
+                        data: structuralComponent,
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Temporal (tariff rush)',
+                        data: temporalComponent,
+                        backgroundColor: '#f97316',
+                        borderColor: '#ea580c',
+                        borderWidth: 1,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}/lb`;
+                            },
+                            afterBody: function(context) {
+                                const idx = context[0].dataIndex;
+                                const total = structuralComponent[idx] + temporalComponent[idx];
+                                return `Total differential: $${total.toFixed(2)}/lb`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false }
+                    },
+                    y: {
+                        stacked: true,
+                        min: 0,
+                        max: 1.6,
+                        title: {
+                            display: true,
+                            text: '$/lb',
+                            font: { size: 11 }
+                        },
+                        ticks: {
+                            callback: value => '$' + value.toFixed(2)
+                        },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+
+        // Cumulative imports chart - line with area fill
+        const importCtx = document.getElementById('importsChart').getContext('2d');
+        new Chart(importCtx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Cumulative US Imports',
+                    data: cumulativeImports,
+                    borderColor: '#059669',
+                    backgroundColor: 'rgba(5, 150, 105, 0.15)',
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#059669',
+                    fill: true,
+                    tension: 0.3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y.toFixed(1)}M lbs cumulative`;
+                            },
+                            afterLabel: function(context) {
+                                const idx = context.dataIndex;
+                                if (idx > 0) {
+                                    const monthlyAdd = cumulativeImports[idx] - cumulativeImports[idx - 1];
+                                    return `(+${monthlyAdd.toFixed(1)}M this month)`;
+                                }
+                                return `(${cumulativeImports[0].toFixed(1)}M this month)`;
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            asymptote: {
+                                type: 'line',
+                                yMin: 97,
+                                yMax: 97,
+                                borderColor: '#94a3b8',
+                                borderWidth: 1,
+                                borderDash: [5, 5],
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Million lbs',
+                            font: { size: 11 }
+                        },
+                        ticks: {
+                            callback: value => value + 'M'
+                        },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
