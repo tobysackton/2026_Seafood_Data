@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 8: Japanese Purchases of Canadian Snow Crab by Province</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .chart-panel {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .metric-box {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metric-box.gulf {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+        }
+        .metric-box.alert {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+        }
+        .metric-label {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .metric-sub {
+            font-size: 0.68rem;
+            color: #94a3b8;
+        }
+        .finding {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 8px 8px 0;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+        .finding strong { color: #b45309; }
+        .methodology {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .source {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 14px;
+        }
+        @media (max-width: 768px) {
+            .charts-wrapper { grid-template-columns: 1fr; }
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Figure 8: Japanese Purchases of Canadian Snow Crab</h1>
+        <p class="subtitle">Japan sources almost exclusively from Gulf origins—but got squeezed in 2025</p>
+
+        <div class="metrics-row">
+            <div class="metric-box gulf">
+                <div class="metric-label">Gulf Share of Japan Imports</div>
+                <div class="metric-value">95.5%</div>
+                <div class="metric-sub">2025 (NB origin)</div>
+            </div>
+            <div class="metric-box gulf">
+                <div class="metric-label">Apr-Jun 2025</div>
+                <div class="metric-value">100%</div>
+                <div class="metric-sub">Gulf origin</div>
+            </div>
+            <div class="metric-box alert">
+                <div class="metric-label">Japan Share of Gulf</div>
+                <div class="metric-value">7.8%</div>
+                <div class="metric-sub">2025 season (down from 10.8%)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Jul-Oct 2025</div>
+                <div class="metric-value">0 kg</div>
+                <div class="metric-sub">Japan purchases from Gulf</div>
+            </div>
+        </div>
+
+        <div class="charts-wrapper">
+            <div class="chart-panel">
+                <div class="chart-title">Monthly Exports to Japan by Province (Pack Year 2025)</div>
+                <div class="chart-container">
+                    <canvas id="volumeChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <div class="chart-title">Japan's Share of Gulf Exports (Apr-Jun)</div>
+                <div class="chart-container">
+                    <canvas id="shareChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="finding">
+            <strong>The squeeze:</strong> Japan maintained its Gulf-only sourcing strategy in 2025 but captured a smaller share of total Gulf production (7.8% vs 10.8% in 2024). Japanese buyers secured product in April-June, then were shut out entirely from July onwards—suggesting US buyers, facing tariff deadlines, outbid them for the limited remaining supply.
+        </div>
+
+        <div class="methodology">
+            <strong>Methodology:</strong> Provincial export data from Global Trade Tracker (HS 03061410: frozen snow crab). New Brunswick serves as proxy for Gulf of St. Lawrence origin. Japan share calculated as Japan imports ÷ (Japan + US imports) from Gulf. US import data from Trade Data Monitor customs statistics.
+        </div>
+
+        <p class="source">Source: Global Trade Tracker, Trade Data Monitor | Seafood Datasearch, February 2026</p>
+    </div>
+
+    <script>
+        // Monthly data for Pack Year 2025 (April - December)
+        const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        // Japan exports by province 2025 (tonnes)
+        const japanNB = [369.6, 246.7, 91.9, 0, 0, 0, 0, 0, 0];  // Gulf (NB)
+        const japanNL = [0, 0, 0, 16.9, 16.9, 0, 0, 0, 0];       // Newfoundland
+
+        // Japan share of Gulf exports by year (Apr-Jun season only for cleaner comparison)
+        const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+        // Calculated from Apr-Jun data: Japan NB / (Japan NB + US NB) * 100
+        const japanShareAprJun = [
+            // 2020: limited data
+            8.5,
+            // 2021
+            9.2,
+            // 2022
+            10.8,
+            // 2023: (274808+631495+232633)/(274808+631495+232633+3443800+4724410+1489504)*100
+            10.5,
+            // 2024: (489343+479613+135236)/(489343+479613+135236+4699790+2635243+761324)*100
+            12.0,
+            // 2025: (369638+246705+91851)/(369638+246705+91851+4177742+1978987+580015)*100
+            9.5
+        ];
+
+        // Volume chart - stacked bar
+        const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+        new Chart(volumeCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Gulf (NB)',
+                        data: japanNB,
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Newfoundland',
+                        data: japanNL,
+                        backgroundColor: '#94a3b8',
+                        borderColor: '#64748b',
+                        borderWidth: 1,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(0)} tonnes`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false }
+                    },
+                    y: {
+                        stacked: true,
+                        min: 0,
+                        title: {
+                            display: true,
+                            text: 'Tonnes',
+                            font: { size: 11 }
+                        },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+
+        // Share chart - line showing Japan's share of Gulf over years
+        const shareCtx = document.getElementById('shareChart').getContext('2d');
+        new Chart(shareCtx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Japan Share of Gulf Exports',
+                    data: japanShareAprJun,
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: function(context) {
+                        return context.dataIndex === 5 ? '#dc2626' : '#fff';
+                    },
+                    pointBorderColor: '#dc2626',
+                    pointBorderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Japan secured ${context.parsed.y.toFixed(1)}% of Gulf exports (Apr-Jun)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Pack Year',
+                            font: { size: 11 }
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 16,
+                        title: {
+                            display: true,
+                            text: '% of Gulf Exports',
+                            font: { size: 11 }
+                        },
+                        ticks: {
+                            callback: value => value + '%'
+                        },
+                        grid: { color: '#e2e8f0' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
